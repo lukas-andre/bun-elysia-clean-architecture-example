@@ -2,7 +2,7 @@
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 -- Create users table
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE users (
 );
 
 -- Create notes table
-CREATE TABLE notes (
+CREATE TABLE IF NOT EXISTS notes (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     title VARCHAR(255) NOT NULL,
@@ -23,20 +23,20 @@ CREATE TABLE notes (
 );
 
 -- Create tags table
-CREATE TABLE tags (
+CREATE TABLE IF NOT EXISTS tags (
     id SERIAL PRIMARY KEY,
     name VARCHAR(50) UNIQUE NOT NULL
 );
 
 -- Create note_tags junction table
-CREATE TABLE note_tags (
+CREATE TABLE IF NOT EXISTS note_tags (
     note_id INTEGER NOT NULL REFERENCES notes(id) ON DELETE CASCADE,
     tag_id INTEGER NOT NULL REFERENCES tags(id) ON DELETE CASCADE,
     PRIMARY KEY (note_id, tag_id)
 );
 
 -- Create indexes for full-text search
-CREATE INDEX notes_search_idx ON notes USING GIN(search_vector);
+CREATE INDEX IF NOT EXISTS notes_search_idx ON notes USING GIN(search_vector);
 
 -- Create a function to update search_vector
 CREATE OR REPLACE FUNCTION notes_search_vector_update() RETURNS TRIGGER AS $$
@@ -45,10 +45,11 @@ BEGIN
         setweight(to_tsvector('english', COALESCE(NEW.title, '')), 'A') ||
         setweight(to_tsvector('english', COALESCE(NEW.content, '')), 'B');
     RETURN NEW;
-END
+END;
 $$ LANGUAGE plpgsql;
 
 -- Create a trigger to update search_vector before insert or update
+DROP TRIGGER IF EXISTS notes_search_vector_update ON notes;
 CREATE TRIGGER notes_search_vector_update
 BEFORE INSERT OR UPDATE ON notes
 FOR EACH ROW
@@ -58,12 +59,12 @@ EXECUTE FUNCTION notes_search_vector_update();
 CREATE OR REPLACE FUNCTION hash_password(password TEXT) RETURNS TEXT AS $$
 BEGIN
     RETURN crypt(password, gen_salt('bf'));
-END
+END;
 $$ LANGUAGE plpgsql;
 
 -- Create a function to verify passwords
 CREATE OR REPLACE FUNCTION verify_password(password TEXT, hashed_password TEXT) RETURNS BOOLEAN AS $$
 BEGIN
     RETURN hashed_password = crypt(password, hashed_password);
-END
+END;
 $$ LANGUAGE plpgsql;
