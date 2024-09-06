@@ -3,10 +3,14 @@
   "version": "1.0.50",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts"
+    "dev": "bun run --watch src/index.ts",
+    "db:up": "docker-compose --env-file .env up -d",
+    "db:down": "docker-compose --env-file .env down",
+    "db:migrate": "bun migrate.js"
   },
   "dependencies": {
-    "elysia": "latest"
+    "elysia": "latest",
+    "postgres": "^3.4.4"
   },
   "devDependencies": {
     "bun-types": "latest"
