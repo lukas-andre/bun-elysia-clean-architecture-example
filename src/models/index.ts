@@ -37,6 +37,14 @@ export const UserModel = {
     `;
     return user;
   },
+  deleteByUsername: async (username: string): Promise<User | undefined> => {
+    const [deletedUser] = await sql<User[]>`
+      DELETE FROM users
+      WHERE username = ${username}
+      RETURNING id, username, email, created_at, updated_at
+    `;
+    return deletedUser;
+  },
 };
 
 export const NoteModel = {
@@ -51,7 +59,7 @@ export const NoteModel = {
       if (note.tags && note.tags.length > 0) {
         await transaction`
           INSERT INTO tags (name)
-          VALUES ${sql(note.tags.map((tag: any) => [tag]))}
+          VALUES ${sql(note.tags.map((tag) => [tag]))}
           ON CONFLICT (name) DO NOTHING
         `;
         
@@ -92,7 +100,7 @@ export const NoteModel = {
         UPDATE notes
         SET 
           title = COALESCE(${note.title!}, title), 
-          content = COALESCE(${note.content}, content), 
+          content = COALESCE(${note.content!}, content), 
           updated_at = CURRENT_TIMESTAMP
         WHERE id = ${id}
         RETURNING *
@@ -108,7 +116,7 @@ export const NoteModel = {
         if (note.tags.length > 0) {
           await transaction`
             INSERT INTO tags (name)
-            VALUES ${sql(note.tags.map((tag: any) => [tag]))}
+            VALUES ${sql(note.tags.map((tag) => [tag]))}
             ON CONFLICT (name) DO NOTHING
           `;
           
@@ -129,5 +137,12 @@ export const NoteModel = {
       RETURNING *
     `;
     return deletedNote;
-  }
+  },
+  deleteAllByUserId: async (userId: number): Promise<number> => {
+    const result = await sql`
+      DELETE FROM notes
+      WHERE user_id = ${userId}
+    `;
+    return result.count;
+  },
 };

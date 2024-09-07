@@ -20,6 +20,13 @@ export const UserService = {
     
     const { password_hash, ...userWithoutPassword } = user;
     return userWithoutPassword;
+  },
+  deleteUser: async (username: string) => {
+    const deletedUser = await UserModel.deleteByUsername(username);
+    if (!deletedUser) {
+      throw new Error('User not found');
+    }
+    return deletedUser;
   }
 };
 
@@ -50,5 +57,8 @@ export const NoteService = {
       throw new Error('Note not found');
     }
     return deletedNote;
+  },
+  deleteAllUserNotes: async (userId: number) => {
+    return await NoteModel.deleteAllByUserId(userId);
   }
 };

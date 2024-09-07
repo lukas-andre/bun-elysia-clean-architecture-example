@@ -7,7 +7,8 @@ export const UserController = {
   },
   login: async ({ body }: { body: { username: string, password: string } }) => {
     return await UserService.loginUser(body.username, body.password);
-  }
+  },
+
 };
 
 export const NoteController = {
@@ -23,7 +24,8 @@ export const NoteController = {
   updateNote: async ({ params, body }: { params: { id: string }, body: Partial<Note> }) => {
     return await NoteService.updateNote(Number(params.id), body);
   },
-  deleteNote: async ({ params }: { params: { id: string } }) => {
-    return await NoteService.deleteNote(Number(params.id));
-  }
+  deleteNote: async (id: number) => {
+    return await NoteService.deleteNote(id);
+  },
+
 };
