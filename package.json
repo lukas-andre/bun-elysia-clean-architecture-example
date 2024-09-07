@@ -3,12 +3,13 @@
   "version": "1.0.50",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts",
+    "dev": "bun run --watch src/server.ts",
     "db:up": "docker-compose --env-file .env -f db/docker-compose.yml up -d",
     "db:down": "docker-compose --env-file .env -f db/docker-compose.yml down",
     "db:migrate": "bun migrate.js"
   },
   "dependencies": {
+    "@elysiajs/swagger": "^1.1.1",
     "elysia": "latest",
     "postgres": "^3.4.4"
   },
