@@ -1,5 +1,5 @@
 import { Static, t } from "elysia";
-import { UserRepository } from "../infrastructure/providers/user.repository";
+import { UserProvider } from "../infrastructure/providers/user.provider";
 
 export const RegisterUserRequestSchema = t.Object({
     username: t.String(),
@@ -16,12 +16,12 @@ export type RegisterUserRequest = Static<typeof RegisterUserRequestSchema>;
 export type RegisteUserResponse = Static<typeof RegisteUserResponseSchema>;  
 
 export const registerUser = async (userData: RegisterUserRequest): Promise<RegisteUserResponse> => {
-  const existingUser = await UserRepository.getByUsername(userData.username);
+  const existingUser = await UserProvider.getByUsername(userData.username);
   if (existingUser) {
     throw new Error('Username already exists');
   }
 
-  const {id, username} = await UserRepository.create(userData);
+  const {id, username} = await UserProvider.create(userData);
   
   return {
     id,

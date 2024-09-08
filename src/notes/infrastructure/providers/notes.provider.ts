@@ -24,7 +24,7 @@ export interface UpdateNoteParms {
   tags?: string[];
 }
 
-export class NoteRepository {
+export class NoteProvider {
   static async create(note: CreateNoteParms): Promise<NoteRecord> {
     return sql.begin(async (transaction) => {
       const [newNote] = await transaction<NoteRecord[]>`

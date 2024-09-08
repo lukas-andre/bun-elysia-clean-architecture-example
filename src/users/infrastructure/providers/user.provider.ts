@@ -16,7 +16,7 @@ export interface CreateUserParms {
   password: string
 }
 
-export class UserRepository {
+export class UserProvider {
   static async create(user: CreateUserParms): Promise<UserRecord> {
     const [newUser] = await sql<UserRecord[]>`
       INSERT INTO users (username, email, password_hash)
