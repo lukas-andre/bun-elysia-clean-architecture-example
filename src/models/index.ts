@@ -55,20 +55,20 @@ export const NoteModel = {
         VALUES (${note.user_id}, ${note.title!}, ${note.content})
         RETURNING *
       `;
-      
+
       if (note.tags && note.tags.length > 0) {
         await transaction`
           INSERT INTO tags (name)
           VALUES ${sql(note.tags.map((tag) => [tag]))}
           ON CONFLICT (name) DO NOTHING
         `;
-        
+
         await transaction`
           INSERT INTO note_tags (note_id, tag_id)
           SELECT ${newNote.id}, id FROM tags WHERE name IN ${sql(note.tags)}
         `;
       }
-      
+
       return newNote;
     });
   },
@@ -84,15 +84,26 @@ export const NoteModel = {
     return note;
   },
   search: async (query: string): Promise<NoteRecord[]> => {
-    return sql<NoteRecord[]>`
-      SELECT n.*, array_remove(array_agg(t.name), NULL) as tags
+    let result = await sql`
+      SELECT 
+        n.id,
+        n.user_id,
+        n.title,
+        n.content,
+        n.created_at,
+        n.updated_at,
+        array_remove(array_agg(t.name), NULL) as tags
       FROM notes n
       LEFT JOIN note_tags nt ON n.id = nt.note_id
       LEFT JOIN tags t ON nt.tag_id = t.id
       WHERE n.search_vector @@ plainto_tsquery('english', ${query})
-      GROUP BY n.id
+      GROUP BY n.id, n.user_id, n.title, n.content, n.created_at, n.updated_at
       ORDER BY ts_rank(n.search_vector, plainto_tsquery('english', ${query})) DESC
     `;
+
+     const parsedResult = result.slice(0, result.count) as NoteRecord[];
+     return parsedResult;
+
   },
   update: async (id: number, note: Partial<Note>): Promise<NoteRecord | undefined> => {
     return sql.begin(async (transaction) => {
@@ -105,28 +116,28 @@ export const NoteModel = {
         WHERE id = ${id}
         RETURNING *
       `;
-      
+
       if (!updatedNote) {
         return undefined;
       }
-      
+
       if (note.tags !== undefined) {
         await transaction`DELETE FROM note_tags WHERE note_id = ${id}`;
-        
+
         if (note.tags.length > 0) {
           await transaction`
             INSERT INTO tags (name)
             VALUES ${sql(note.tags.map((tag) => [tag]))}
             ON CONFLICT (name) DO NOTHING
           `;
-          
+
           await transaction`
             INSERT INTO note_tags (note_id, tag_id)
             SELECT ${id}, id FROM tags WHERE name IN ${sql(note.tags)}
           `;
         }
       }
-      
+
       return updatedNote;
     });
   },

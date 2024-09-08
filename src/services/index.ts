@@ -42,7 +42,8 @@ export const NoteService = {
     return note;
   },
   searchNotes: async (query: string) => {
-    return await NoteModel.search(query);
+    const result =  await NoteModel.search(query);
+    return result;
   },
   updateNote: async (id: number, note: Partial<Note>) => {
     const updatedNote = await NoteModel.update(id, note);

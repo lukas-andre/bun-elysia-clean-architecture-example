@@ -2,7 +2,6 @@ import postgres from 'postgres';
 import fs from 'fs/promises';
 import path from 'path';
 
-
 const sql = postgres();
 
 async function migrate() {

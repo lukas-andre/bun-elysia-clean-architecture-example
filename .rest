@@ -1,0 +1,94 @@
+### Variables de entorno
+@baseUrl = http://localhost:4000
+
+### Registro de Usuario
+# @name register
+POST http://localhost:4000/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "testuser@example.com",
+  "password": "password123"
+}
+
+### Login de Usuario
+# @name login
+POST {{baseUrl}}/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+### Token (asumiendo que tu login devuelve un token)
+@token = {{login.response.body.token}}
+
+### Crear una nota
+POST {{baseUrl}}/notes HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "user_id": 16,
+  "title": "Mi Segunda nota",
+  "content": "Este es el contenido de mi segunda nota",
+  "tags": ["prueba", "segunda"]
+}
+
+### Obtener una nota específica
+GET {{baseUrl}}/notes/1 HTTP/1.1
+Authorization: Bearer {{token}}
+
+### Buscar notas
+GET {{baseUrl}}/notes/search?q=primera HTTP/1.1
+Authorization: Bearer {{token}}
+
+### Actualizar una nota
+PUT {{baseUrl}}/notes/1 HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Mi primera nota actualizada",
+  "content": "Este es el contenido actualizado de mi primera nota",
+  "tags": ["prueba", "primera", "actualizada"]
+}
+
+### Eliminar una nota
+DELETE {{baseUrl}}/notes/1 HTTP/1.1
+Authorization: Bearer {{token}}
+
+### Crear una nota con archivos adjuntos (si decides implementar esta funcionalidad en el futuro)
+POST {{baseUrl}}/notes HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="user_id"
+
+1
+--boundary
+Content-Disposition: form-data; name="title"
+
+Nota con archivos adjuntos
+--boundary
+Content-Disposition: form-data; name="content"
+
+Esta es una nota con archivos adjuntos
+--boundary
+Content-Disposition: form-data; name="tags"
+
+["adjunto", "prueba"]
+--boundary
+Content-Disposition: form-data; name="files[]"; filename="archivo1.txt"
+Content-Type: text/plain
+
+< ./path/to/archivo1.txt
+--boundary
+Content-Disposition: form-data; name="files[]"; filename="archivo2.png"
+Content-Type: image/png
+
+< ./path/to/archivo2.png
+--boundary--
