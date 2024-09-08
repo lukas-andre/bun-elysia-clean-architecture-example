@@ -1,11 +1,10 @@
-import { t } from 'elysia';
-import { CreateElysia } from '../../shared/framework/elysia';
+import Elysia, { t } from 'elysia';
 import { registerUser } from '../application/registerUser';
 import { loginUser, LoginUserRequestSchema, LoginUserResponseSchema } from '../application/loginUser';
 import { UserSchema } from '../domain/user.type';
 
-const route = CreateElysia({ prefix: '/users' })
-  .post('/register', async ({ body, set }) => {
+const route = new Elysia()
+  .post('users/register', async ({ body, set }) => {
     try {
       const newUser = await registerUser(body);
       set.status = 201;
@@ -32,7 +31,7 @@ const route = CreateElysia({ prefix: '/users' })
       description: 'Create a new user account'
     }
   })
-  .post('/login', async ({ body, set }) => {
+  .post('users/login', async ({ body, set }) => {
     try {
       const { user, token } = await loginUser({
         password: body.password,

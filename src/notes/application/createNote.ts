@@ -1,11 +1,6 @@
-import sql from "../../shared/infraestructure/db";
 import { Note } from "../domain/note.type";
+import { NoteRepository } from "../infrastructure/providers/notes.provider";
 
-export const createNote = async (title: string, content: string): Promise<Note> => {
-    const [note] = await sql<[Note]>`
-      INSERT INTO notes (title, content)
-      VALUES (${title}, ${content})
-      RETURNING *
-    `;
-    return note;
-  };
+export const createNote = async (user_id: number, title: string, content: string): Promise<Note> => {
+  return await NoteRepository.create({ user_id, title, content });
+};

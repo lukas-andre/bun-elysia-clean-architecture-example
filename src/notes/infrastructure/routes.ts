@@ -1,13 +1,13 @@
-import { t } from 'elysia';
-import { CreateElysia } from '../../shared/framework/elysia';
+import Elysia, { t } from 'elysia';
 import { getNoteById } from '../application/getNoteById';
 import { NoteSchema } from '../domain/note.type';
 import { createNote } from '../application/createNote';
-import { deleteNote, updateNote } from '../application/updateNote';
+import { updateNote } from '../application/updateNote';
 import { getAllNotes } from '../application/getAllNotes';
+import { deleteNote } from '../application/deleteNote';
 
-const route = CreateElysia({ prefix: '/notes' })
-  .get('/', async ({ set }) => {
+const route = new Elysia({prefix: 'api', })
+  .get('notes', async ({ set }) => {
     try {
       const notes = await getAllNotes();
       return { status: 'success', data: notes };
@@ -25,12 +25,16 @@ const route = CreateElysia({ prefix: '/notes' })
         status: t.String(),
         message: t.String()
       })
+    },
+    detail: {
+      tags: ['Notes'],
+      summary: 'Get all notes',
+      description: 'Retrieve a list of all notes'
     }
   })
-  .get('/:id', async ({ params: { id }, set }) => {
+  .get('notes/:id', async ({ params: { id }, set }) => {
     try {
       const note = await getNoteById(Number(id))
-      // const note = await getNoteById(Number(id));
       if (!note) {
         set.status = 404;
         return { status: 'error', message: 'Note not found' };
@@ -54,11 +58,16 @@ const route = CreateElysia({ prefix: '/notes' })
         status: t.String(),
         message: t.String()
       })
+    },
+    detail: {
+      tags: ['Notes'],
+      summary: 'Get a note by ID',
+      description: 'Retrieve a specific note by its ID'
     }
   })
-  .post('/', async ({ body, set }) => {
+  .post('notes', async ({ body, set }) => {
     try {
-      const note = await createNote(body.title, body.content);
+      const note = await createNote(body.user_id, body.title, body.content);
       set.status = 201;
       return { status: 'success', data: note };
     } catch (e) {
@@ -68,7 +77,8 @@ const route = CreateElysia({ prefix: '/notes' })
   }, {
     body: t.Object({
       title: t.String(),
-      content: t.String()
+      content: t.String(),
+      user_id: t.Number(),
     }),
     response: {
       201: t.Object({
@@ -79,9 +89,14 @@ const route = CreateElysia({ prefix: '/notes' })
         status: t.String(),
         message: t.String()
       })
+    },
+    detail: {
+      tags: ['Notes'],
+      summary: 'Create a new note',
+      description: 'Create a new note with the provided title and content'
     }
   })
-  .put('/:id', async ({ params: { id }, body, set }) => {
+  .put('notes/:id', async ({ params: { id }, body, set }) => {
     try {
       const note = await updateNote(Number(id), body.title, body.content);
       if (!note) {
@@ -111,9 +126,14 @@ const route = CreateElysia({ prefix: '/notes' })
         status: t.String(),
         message: t.String()
       })
+    },
+    detail: {
+      tags: ['Notes'],
+      summary: 'Update a note',
+      description: 'Update an existing note with new title and content'
     }
   })
-  .delete('/:id', async ({ params: { id }, set }) => {
+  .delete('notes/:id', async ({ params: { id }, set }) => {
     try {
       const deleted = await deleteNote(Number(id));
       if (!deleted) {
@@ -139,6 +159,11 @@ const route = CreateElysia({ prefix: '/notes' })
         status: t.String(),
         message: t.String()
       })
+    },
+    detail: {
+      tags: ['Notes'],
+      summary: 'Delete a note',
+      description: 'Delete a specific note by its ID'
     }
   });
 

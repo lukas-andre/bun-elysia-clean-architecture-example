@@ -1,10 +1,10 @@
 import logger  from 'logixlysia';
-import { CreateElysia } from './shared/framework/elysia';
 import swagger from '@elysiajs/swagger';
 import { env } from './shared/infraestructure/env';
 import { APIRoute } from './routes';
+import Elysia from 'elysia';
 
-const server = CreateElysia()
+const server = new Elysia()
   .use(logger())
   .use(
     swagger({

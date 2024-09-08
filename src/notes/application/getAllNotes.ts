@@ -1,7 +1,11 @@
-import sql from "../../shared/infraestructure/db";
 import { Note } from "../domain/note.type";
+import { NoteRepository } from "../infrastructure/providers/notes.provider";
 
 export const getAllNotes = async (): Promise<Note[]> => {
-    return await sql`SELECT * FROM notes ORDER BY created_at DESC`;
-  };
+  const notes = await NoteRepository.getAll();
+
+  return {
+    ...notes
+  }
+};
   

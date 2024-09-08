@@ -1,7 +1,7 @@
-import sql from "../../shared/infraestructure/db";
 import { Note } from "../domain/note.type";
+import { NoteRepository } from "../infrastructure/providers/notes.provider";
 
 export const getNoteById = async (id: number): Promise<Note | null> => {
-    const [note] = await sql<[Note?]>`SELECT * FROM notes WHERE id = ${id}`;
+    const note = await NoteRepository.getById(id);
     return note || null;
   };

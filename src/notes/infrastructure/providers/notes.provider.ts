@@ -1,8 +1,7 @@
 import sql from "../../../shared/infraestructure/db";
 import { Note } from "../../domain/note.type";
 
-
-interface NoteRecord {
+export interface NoteRecord {
   id: number;
   user_id: number;
   title: string;
@@ -12,12 +11,25 @@ interface NoteRecord {
   tags?: string[];
 }
 
+export interface CreateNoteParms {
+  user_id: number;
+  title: string;
+  content: string;
+  tags?: string[];
+}
+
+export interface UpdateNoteParms {
+  title?: string;
+  content?: string;
+  tags?: string[];
+}
+
 export class NoteRepository {
-  static async create(note: Note): Promise<NoteRecord> {
+  static async create(note: CreateNoteParms): Promise<NoteRecord> {
     return sql.begin(async (transaction) => {
       const [newNote] = await transaction<NoteRecord[]>`
         INSERT INTO notes (user_id, title, content)
-        VALUES (${note.user_id}, ${note.title!}, ${note.content})
+        VALUES (${note.user_id}, ${note.title}, ${note.content})
         RETURNING *
       `;
 
@@ -50,28 +62,18 @@ export class NoteRepository {
     return note;
   }
 
-  static async search(query: string): Promise<NoteRecord[]> {
-    let result = await sql`
-      SELECT 
-        n.id,
-        n.user_id,
-        n.title,
-        n.content,
-        n.created_at,
-        n.updated_at,
-        array_remove(array_agg(t.name), NULL) as tags
+  static async getAll(): Promise<NoteRecord[]> {
+    return await sql<NoteRecord[]>`
+      SELECT n.*, array_remove(array_agg(t.name), NULL) as tags
       FROM notes n
       LEFT JOIN note_tags nt ON n.id = nt.note_id
       LEFT JOIN tags t ON nt.tag_id = t.id
-      WHERE n.search_vector @@ plainto_tsquery('english', ${query})
-      GROUP BY n.id, n.user_id, n.title, n.content, n.created_at, n.updated_at
-      ORDER BY ts_rank(n.search_vector, plainto_tsquery('english', ${query})) DESC
+      GROUP BY n.id
+      ORDER BY n.created_at DESC
     `;
-
-    return result.slice(0, result.count) as NoteRecord[];
   }
 
-  static async update(id: number, note: Partial<Note>): Promise<NoteRecord | undefined> {
+  static async update(id: number, note: UpdateNoteParms): Promise<NoteRecord | undefined> {
     return sql.begin(async (transaction) => {
       const [updatedNote] = await transaction<NoteRecord[]>`
         UPDATE notes
@@ -123,5 +125,27 @@ export class NoteRepository {
       WHERE user_id = ${userId}
     `;
     return result.count;
+  }
+
+  static async searchByTerm(term: string) {
+    let result = await sql`
+      SELECT 
+        n.id,
+        n.user_id,
+        n.title,
+        n.content,
+        n.created_at,
+        n.updated_at,
+        array_remove(array_agg(t.name), NULL) as tags
+      FROM notes n
+      LEFT JOIN note_tags nt ON n.id = nt.note_id
+      LEFT JOIN tags t ON nt.tag_id = t.id
+      WHERE n.search_vector @@ plainto_tsquery('english', ${term})
+      GROUP BY n.id, n.user_id, n.title, n.content, n.created_at, n.updated_at
+      ORDER BY ts_rank(n.search_vector, plainto_tsquery('english', ${term})) DESC
+    `;
+
+    const parsedResult = result.slice(0, result.count) as Note[];
+    return parsedResult;
   }
 }

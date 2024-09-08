@@ -1,8 +1,8 @@
 import { route as UserRoute} from './users/infrastructure/routes'
 import { route as NoteRoute} from './notes/infrastructure/routes'
-import { CreateElysia } from "./shared/framework/elysia"
+import Elysia from 'elysia'
 
-const route = CreateElysia({ prefix: '/api' })
+const route = new Elysia({ prefix: '/api' })
     .use(UserRoute)
     .use(NoteRoute)
 
