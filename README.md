@@ -114,7 +114,7 @@ Each module is divided into:
 The project uses Elysia, a modern and performant web framework for Bun. It provides a clean and intuitive API for building web applications.
 
 ### 🗄️ Postgres.js
-Postgres.js is used for database operations, offering a simple and efficient way to interact with PostgreSQL databases.
+[Fastest full-featured node & deno client](https://github.com/porsager/postgres-benchmarks#results), Postgres.js is used for database operations, offering a simple and efficient way to interact with PostgreSQL databases.
 
 ### 🏛 Clean Architecture
 The project follows clean architecture principles, separating concerns into distinct layers: Application, Domain, and Infrastructure.
@@ -141,13 +141,6 @@ The API documentation is available through Swagger UI. After starting the server
 Here's a preview of what the Swagger documentation looks like:
 
 ![Swagger Documentation](docs/swagger.png)
-
-To update this screenshot:
-1. Start your server
-2. Navigate to `http://localhost:3000/swagger` in your browser
-3. Take a screenshot of the Swagger UI
-4. Save the screenshot in your project's repository (e.g., in the `docs` folder)
-5. Update the image path in this README to point to your new screenshot
 
 ## 🧪 Testing
 
