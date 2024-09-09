@@ -1,4 +1,5 @@
 import { Static, t } from 'elysia';
+
 import { generateToken } from '../../shared/infrastructure/auth/jwt';
 import { verifyPassword } from '../../shared/infrastructure/auth/password';
 import { UserRepository } from '../../users/infrastructure/user.repository';

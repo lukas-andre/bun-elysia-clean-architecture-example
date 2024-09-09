@@ -1,6 +1,7 @@
 import { Static, t } from 'elysia';
-import { UserRepository } from '../../users/infrastructure/user.repository';
+
 import { hashPassword } from '../../shared/infrastructure/auth/password';
+import { UserRepository } from '../../users/infrastructure/user.repository';
 
 export const RegisterUserRequestSchema = t.Object({
   username: t.String(),

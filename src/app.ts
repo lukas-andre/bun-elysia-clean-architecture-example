@@ -1,8 +1,9 @@
-import logger from 'logixlysia';
 import swagger from '@elysiajs/swagger';
-import { env } from './shared/infrastructure/env';
-import { AppRoutes } from './app.routes';
 import Elysia from 'elysia';
+import logger from 'logixlysia';
+
+import { AppRoutes } from './app.routes';
+import { env } from './shared/infrastructure/env';
 
 const app = new Elysia()
   .use(logger())

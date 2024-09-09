@@ -7,7 +7,7 @@
     "db:up": "docker-compose --env-file .env -f db/docker-compose.yml up -d",
     "db:down": "docker-compose --env-file .env -f db/docker-compose.yml down",
     "db:migrate": "bun migrate.js",
-    "lint": "eslint .",
+    "lint": "eslint . --fix",
     "format": "prettier --write ."
   },
   "dependencies": {
@@ -23,8 +23,11 @@
     "bun-types": "latest",
     "eslint": "^9.10.0",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.30.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "prettier": "^3.3.3"
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "prettier": "^3.3.3",
+    "typescript-eslint": "^8.4.0"
   },
   "module": "src/index.js"
 }

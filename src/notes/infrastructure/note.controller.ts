@@ -1,10 +1,11 @@
 import Elysia, { t } from 'elysia';
-import { getNoteByIdUseCase } from '../application/get-note-by-id';
-import { NoteSchema } from '../domain/note.type';
+
 import { createNoteUseCase } from '../application/create-note.usecase';
-import { updateNoteUseCase } from '../application/update-note.usecase';
-import { getAllNotesUseCase } from '../application/get-all-notes.usecase';
 import { deleteNoteUsecase } from '../application/delete-note.usecase';
+import { getAllNotesUseCase } from '../application/get-all-notes.usecase';
+import { getNoteByIdUseCase } from '../application/get-note-by-id.usecase';
+import { updateNoteUseCase } from '../application/update-note.usecase';
+import { NoteSchema } from '../domain/note.type';
 
 export const NoteController = new Elysia()
   .get(
@@ -14,6 +15,7 @@ export const NoteController = new Elysia()
         const notes = await getAllNotesUseCase();
         return { status: 'success', data: notes };
       } catch (e) {
+        console.error(e);
         set.status = 500;
         return { status: 'error', message: 'Internal Server Error' };
       }
@@ -47,6 +49,7 @@ export const NoteController = new Elysia()
         }
         return { status: 'success', data: note };
       } catch (e) {
+        console.error(e);
         set.status = 500;
         return { status: 'error', message: 'Internal Server Error' };
       }
@@ -77,10 +80,15 @@ export const NoteController = new Elysia()
     'notes',
     async ({ body, set }) => {
       try {
-        const note = await createNoteUseCase(body.user_id, body.title, body.content);
+        const note = await createNoteUseCase(
+          body.user_id,
+          body.title,
+          body.content,
+        );
         set.status = 201;
         return { status: 'success', data: note };
       } catch (e) {
+        console.error(e);
         set.status = 500;
         return { status: 'error', message: 'Internal Server Error' };
       }
@@ -112,13 +120,18 @@ export const NoteController = new Elysia()
     'notes/:id',
     async ({ params: { id }, body, set }) => {
       try {
-        const note = await updateNoteUseCase(Number(id), body.title, body.content);
+        const note = await updateNoteUseCase(
+          Number(id),
+          body.title,
+          body.content,
+        );
         if (!note) {
           set.status = 404;
           return { status: 'error', message: 'Note not found' };
         }
         return { status: 'success', data: note };
       } catch (e) {
+        console.error(e);
         set.status = 500;
         return { status: 'error', message: 'Internal Server Error' };
       }
@@ -160,6 +173,7 @@ export const NoteController = new Elysia()
         }
         return { status: 'success', message: 'Note deleted successfully' };
       } catch (e) {
+        console.error(e);
         set.status = 500;
         return { status: 'error', message: 'Internal Server Error' };
       }
@@ -186,4 +200,3 @@ export const NoteController = new Elysia()
       },
     },
   );
-

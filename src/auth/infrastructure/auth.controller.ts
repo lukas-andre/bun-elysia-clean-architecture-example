@@ -1,14 +1,15 @@
 import Elysia, { t } from 'elysia';
-import {
-  registerUseCase,
-  RegisterUserRequestSchema,
-  RegisteUserResponseSchema,
-} from '../application/register.usecase';
+
 import {
   loginUseCase,
   LoginUserRequestSchema,
   LoginUserResponseSchema,
 } from '../application/login.usecase';
+import {
+  registerUseCase,
+  RegisterUserRequestSchema,
+  RegisteUserResponseSchema,
+} from '../application/register.usecase';
 
 export const AuthController = new Elysia().group('/auth', (app) =>
   app
@@ -85,4 +86,3 @@ export const AuthController = new Elysia().group('/auth', (app) =>
       },
     ),
 );
-

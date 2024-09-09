@@ -1,6 +1,6 @@
-import postgres from 'postgres';
 import fs from 'fs/promises';
 import path from 'path';
+import postgres from 'postgres';
 
 const sql = postgres();
 

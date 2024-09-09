@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+
 import { User } from '../../../users/domain/user.type';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
