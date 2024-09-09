@@ -1,7 +1,7 @@
 import logger  from 'logixlysia';
 import swagger from '@elysiajs/swagger';
 import { env } from './shared/infraestructure/env';
-import { APIRoute } from './routes';
+import { AppRoutes } from './app.routes';
 import Elysia from 'elysia';
 
 const server = new Elysia()
@@ -13,7 +13,7 @@ const server = new Elysia()
       documentation: {
         info: {
           title: '🦊 Elysia Clean Architecture',
-          description: 'Clean Architecture pattern for ElysiaJS + Postgres.js, inspired on https://github.com/PunGrumpy/old-elysia-mvc-simple',
+          description: 'Clean Architecture pattern for ElysiaJS + Bun + Postgres.js',
           version: '1.0.0',
           license: {
             name: 'MIT',
@@ -27,7 +27,7 @@ const server = new Elysia()
       }
     })
   )
-  .use(APIRoute)
+  .use(AppRoutes)
 
 server.listen({ port: env.PORT });
 

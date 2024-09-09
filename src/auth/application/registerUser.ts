@@ -1,5 +1,6 @@
 import { Static, t } from "elysia";
-import { UserProvider } from "../infrastructure/providers/user.provider";
+import { UserProvider } from "../../users/infrastructure/providers/user.provider";
+import { hashPassword } from "../../shared/infraestructure/auth/password";
 
 export const RegisterUserRequestSchema = t.Object({
     username: t.String(),
@@ -20,6 +21,8 @@ export const registerUser = async (userData: RegisterUserRequest): Promise<Regis
   if (existingUser) {
     throw new Error('Username already exists');
   }
+
+  userData.password = await hashPassword(userData.password)
 
   const {id, username} = await UserProvider.create(userData);
   

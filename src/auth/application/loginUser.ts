@@ -1,7 +1,7 @@
 import { Static, t } from "elysia";
-import { UserProvider } from "../infrastructure/providers/user.provider";
 import { generateToken } from "../../shared/infraestructure/auth/jwt";
 import { verifyPassword } from "../../shared/infraestructure/auth/password";
+import { UserProvider } from "../../users/infrastructure/providers/user.provider";
 
 export const LoginUserRequestSchema = t.Object({
   username: t.String(),
@@ -27,6 +27,7 @@ export const loginUser = async (loginData: LoginUserRequest): Promise<LoginUserR
   }
 
   const isPasswordValid = await verifyPassword(loginData.password, user.password_hash!);
+
   if (!isPasswordValid) {
     throw new Error('Invalid password');
   }

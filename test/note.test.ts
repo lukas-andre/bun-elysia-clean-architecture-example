@@ -1,6 +1,6 @@
 import { describe, expect, it, beforeAll, afterAll } from 'bun:test';
 import { Elysia } from 'elysia';
-import routes from '../src/routes';
+import routes from '../src/app.routes';
 import { UserService, NoteService } from '../src/services';
 
 describe('Note Routes', () => {

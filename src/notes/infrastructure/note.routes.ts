@@ -6,7 +6,7 @@ import { updateNote } from '../application/updateNote';
 import { getAllNotes } from '../application/getAllNotes';
 import { deleteNote } from '../application/deleteNote';
 
-const route = new Elysia({prefix: 'api', })
+const route = new Elysia()
   .get('notes', async ({ set }) => {
     try {
       const notes = await getAllNotes();

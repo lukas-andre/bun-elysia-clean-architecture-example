@@ -20,7 +20,7 @@ export class UserProvider {
   static async create(user: CreateUserParms): Promise<UserRecord> {
     const [newUser] = await sql<UserRecord[]>`
       INSERT INTO users (username, email, password_hash)
-      VALUES (${user.username}, ${user.email}, hash_password(${user.password}))
+      VALUES (${user.username}, ${user.email}, ${user.password})
       RETURNING id, username, email, created_at, updated_at
     `;
     return newUser;
