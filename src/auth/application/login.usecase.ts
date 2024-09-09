@@ -1,7 +1,7 @@
 import { Static, t } from 'elysia';
-import { generateToken } from '../../shared/infraestructure/auth/jwt';
-import { verifyPassword } from '../../shared/infraestructure/auth/password';
-import { UserProvider } from '../../users/infrastructure/providers/user.provider';
+import { generateToken } from '../../shared/infrastructure/auth/jwt';
+import { verifyPassword } from '../../shared/infrastructure/auth/password';
+import { UserRepository } from '../../users/infrastructure/user.repository';
 
 export const LoginUserRequestSchema = t.Object({
   username: t.String(),
@@ -20,10 +20,10 @@ export const LoginUserResponseSchema = t.Object({
 export type LoginUserRequest = Static<typeof LoginUserRequestSchema>;
 export type LoginUserResponse = Static<typeof LoginUserResponseSchema>;
 
-export const loginUser = async (
+export const loginUseCase = async (
   loginData: LoginUserRequest,
 ): Promise<LoginUserResponse> => {
-  const user = await UserProvider.getByUsername(loginData.username);
+  const user = await UserRepository.getByUsername(loginData.username);
   if (!user) {
     throw new Error('User not found');
   }

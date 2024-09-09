@@ -1,5 +1,5 @@
-import sql from '../../../shared/infraestructure/db';
-import { User } from '../../domain/user.type';
+import sql from '../../shared/infrastructure/db';
+import { User } from '../domain/user.type';
 
 export interface UserRecord {
   id: number;
@@ -16,7 +16,7 @@ export interface CreateUserParms {
   password: string;
 }
 
-export class UserProvider {
+export class UserRepository {
   static async create(user: CreateUserParms): Promise<UserRecord> {
     const [newUser] = await sql<UserRecord[]>`
       INSERT INTO users (username, email, password_hash)

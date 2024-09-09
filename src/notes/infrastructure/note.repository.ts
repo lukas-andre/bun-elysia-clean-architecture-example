@@ -1,5 +1,5 @@
-import sql from '../../../shared/infraestructure/db';
-import { Note } from '../../domain/note.type';
+import sql from '../../shared/infrastructure/db';
+import { Note } from '../domain/note.type';
 
 export interface NoteRecord {
   id: number;
@@ -24,7 +24,7 @@ export interface UpdateNoteParms {
   tags?: string[];
 }
 
-export class NoteProvider {
+export class NoteRepository {
   static async create(note: CreateNoteParms): Promise<NoteRecord> {
     return sql.begin(async (transaction) => {
       const [newNote] = await transaction<NoteRecord[]>`

@@ -1,10 +1,10 @@
 import logger from 'logixlysia';
 import swagger from '@elysiajs/swagger';
-import { env } from './shared/infraestructure/env';
+import { env } from './shared/infrastructure/env';
 import { AppRoutes } from './app.routes';
 import Elysia from 'elysia';
 
-const server = new Elysia()
+const app = new Elysia()
   .use(logger())
   .use(
     swagger({
@@ -30,8 +30,8 @@ const server = new Elysia()
   )
   .use(AppRoutes);
 
-server.listen({ port: env.PORT });
+app.listen({ port: env.PORT });
 
 console.log(
-  `🦊 Elysia is running at ${server.server?.hostname}:${server.server?.port}`,
+  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`,
 );

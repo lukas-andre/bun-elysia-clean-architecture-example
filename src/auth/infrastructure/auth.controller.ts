@@ -1,23 +1,22 @@
 import Elysia, { t } from 'elysia';
 import {
-  registerUser,
+  registerUseCase,
   RegisterUserRequestSchema,
   RegisteUserResponseSchema,
-} from '../application/registerUser';
+} from '../application/register.usecase';
 import {
-  loginUser,
+  loginUseCase,
   LoginUserRequestSchema,
   LoginUserResponseSchema,
-} from '../application/loginUser';
-import { UserSchema } from '../../users/domain/user.type';
+} from '../application/login.usecase';
 
-const route = new Elysia().group('/auth', (app) =>
+export const AuthController = new Elysia().group('/auth', (app) =>
   app
     .post(
       '/register',
       async ({ body, set }) => {
         try {
-          const newUser = await registerUser(body);
+          const newUser = await registerUseCase(body);
           set.status = 201;
           return { status: 'success', data: newUser };
         } catch (error) {
@@ -52,7 +51,7 @@ const route = new Elysia().group('/auth', (app) =>
       '/login',
       async ({ body, set }) => {
         try {
-          const { user, token } = await loginUser({
+          const { user, token } = await loginUseCase({
             password: body.password,
             username: body.username,
           });
@@ -87,4 +86,3 @@ const route = new Elysia().group('/auth', (app) =>
     ),
 );
 
-export { route };

@@ -1,7 +1,8 @@
-import { route as AuthRoute } from './auth/infrastructure/auth.routes';
-import { route as NoteRoute } from './notes/infrastructure/note.routes';
+import { AuthController } from './auth/infrastructure/auth.controller';
+import { NoteController } from './notes/infrastructure/note.controller';
 import Elysia from 'elysia';
 
-const route = new Elysia({ prefix: 'api/v1' }).use(AuthRoute).use(NoteRoute);
+export const AppRoutes = new Elysia({ prefix: 'api/v1' })
+  .use(AuthController)
+  .use(NoteController);
 
-export { route as AppRoutes };

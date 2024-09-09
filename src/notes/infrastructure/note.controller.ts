@@ -1,17 +1,17 @@
 import Elysia, { t } from 'elysia';
-import { getNoteById } from '../application/getNoteById';
+import { getNoteByIdUseCase } from '../application/get-note-by-id';
 import { NoteSchema } from '../domain/note.type';
-import { createNote } from '../application/createNote';
-import { updateNote } from '../application/updateNote';
-import { getAllNotes } from '../application/getAllNotes';
-import { deleteNote } from '../application/deleteNote';
+import { createNoteUseCase } from '../application/create-note.usecase';
+import { updateNoteUseCase } from '../application/update-note.usecase';
+import { getAllNotesUseCase } from '../application/get-all-notes.usecase';
+import { deleteNoteUsecase } from '../application/delete-note.usecase';
 
-const route = new Elysia()
+export const NoteController = new Elysia()
   .get(
     'notes',
     async ({ set }) => {
       try {
-        const notes = await getAllNotes();
+        const notes = await getAllNotesUseCase();
         return { status: 'success', data: notes };
       } catch (e) {
         set.status = 500;
@@ -40,7 +40,7 @@ const route = new Elysia()
     'notes/:id',
     async ({ params: { id }, set }) => {
       try {
-        const note = await getNoteById(Number(id));
+        const note = await getNoteByIdUseCase(Number(id));
         if (!note) {
           set.status = 404;
           return { status: 'error', message: 'Note not found' };
@@ -77,7 +77,7 @@ const route = new Elysia()
     'notes',
     async ({ body, set }) => {
       try {
-        const note = await createNote(body.user_id, body.title, body.content);
+        const note = await createNoteUseCase(body.user_id, body.title, body.content);
         set.status = 201;
         return { status: 'success', data: note };
       } catch (e) {
@@ -112,7 +112,7 @@ const route = new Elysia()
     'notes/:id',
     async ({ params: { id }, body, set }) => {
       try {
-        const note = await updateNote(Number(id), body.title, body.content);
+        const note = await updateNoteUseCase(Number(id), body.title, body.content);
         if (!note) {
           set.status = 404;
           return { status: 'error', message: 'Note not found' };
@@ -153,7 +153,7 @@ const route = new Elysia()
     'notes/:id',
     async ({ params: { id }, set }) => {
       try {
-        const deleted = await deleteNote(Number(id));
+        const deleted = await deleteNoteUsecase(Number(id));
         if (!deleted) {
           set.status = 404;
           return { status: 'error', message: 'Note not found' };
@@ -187,4 +187,3 @@ const route = new Elysia()
     },
   );
 
-export { route };
