@@ -5,6 +5,7 @@
 Notes API is a backend application that provides an interface for managing notes with full-text search capabilities. It uses modern and efficient technologies to offer optimal performance and a pleasant development experience.
 
 ### Key Features:
+
 - Full CRUD operations for notes
 - Full-text search in notes
 - Tagging system for categorizing notes
@@ -13,15 +14,18 @@ Notes API is a backend application that provides an interface for managing notes
 ## Technologies Used
 
 1. **Bun**: Fast all-in-one JavaScript runtime
+
    - Runs JavaScript and TypeScript
    - Includes package manager, bundler, and test runner
 
 2. **Elysia**: Minimal and efficient web framework for Bun
+
    - Static typing
    - High performance
    - Declarative API
 
 3. **Postgres.js**: Native PostgreSQL client for Node.js and Bun
+
    - Full support for PostgreSQL features
    - High performance
    - Simple and powerful API
@@ -33,26 +37,31 @@ Notes API is a backend application that provides an interface for managing notes
 ## Project Setup
 
 1. Clone the repository:
+
    ```
    git clone https://github.com/your-username/notes-api.git
    cd notes-api
    ```
 
 2. Install dependencies:
+
    ```
    bun install
    ```
 
 3. Configure environment variables:
+
    - Copy `.env.example` to `.env`
    - Edit `.env` with your configurations
 
 4. Start PostgreSQL database:
+
    ```
    bun run db:up
    ```
 
 5. Run migrations:
+
    ```
    bun run db:migrate
    ```
@@ -89,16 +98,19 @@ The server will be available at `http://localhost:3000`
 ## Useful Commands
 
 - Start development server:
+
   ```
   bun run dev
   ```
 
 - Run tests:
+
   ```
   bun test
   ```
 
 - Run migrations:
+
   ```
   bun run db:migrate
   ```

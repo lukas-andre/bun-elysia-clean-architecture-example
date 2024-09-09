@@ -1,55 +1,58 @@
-import { describe, expect, it, beforeAll, afterAll } from 'bun:test';
+import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 import { Elysia } from 'elysia';
-import routes from '../src/routes';
-import { UserService } from '../src/services';
+
+import { AuthController } from '../src/auth/infrastructure/auth.controller';
+import { UserRepository } from '../src/users/infrastructure/user.repository';
 
 describe('User Routes', () => {
   let app: Elysia;
 
   beforeAll(() => {
-    app = new Elysia().use(routes);
+    app = new Elysia().use(AuthController);
   });
 
   it('should register a new user', async () => {
+    await UserRepository.deleteByUsername('testuser');
     const response = await app.handle(
-      new Request('http://localhost/register', {
+      new Request('http://localhost/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           username: 'testuser',
           email: 'test@example.com',
-          password: 'password123'
-        })
-      })
+          password: 'password123',
+        }),
+      }),
     );
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(201);
     const user = await response.json();
-    expect(user).toHaveProperty('id');
-    expect(user.username).toBe('testuser');
-    expect(user.email).toBe('test@example.com');
+    expect(user.data).toHaveProperty('id');
+    expect(user.data.username).toBe('testuser');
   });
 
   it('should login a user', async () => {
     const response = await app.handle(
-      new Request('http://localhost/login', {
+      new Request('http://localhost/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           username: 'testuser',
-          password: 'password123'
-        })
-      })
+          password: 'password123',
+        }),
+      }),
     );
 
     expect(response.status).toBe(200);
-    const user = await response.json();
-    expect(user).toHaveProperty('id');
-    expect(user.username).toBe('testuser');
+    const res = await response.json();
+    console.log({ res, user: res.data.user });
+    expect(res.data.user).toHaveProperty('id');
+    expect(res.data.user.username).toBe('testuser');
+    expect(res.data.token).toBeDefined();
   });
 
   afterAll(async () => {
     // Clean up: Delete test user
-    await UserService.deleteUser('testuser');
+    await UserRepository.deleteByUsername('testuser');
   });
 });

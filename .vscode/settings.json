@@ -1,0 +1,5 @@
+{
+  "bun.runtime": "/Users/noname/.bun/bin/bun",
+  "bun.debugTerminal.enabled": true,
+  "bun.debugTerminal.stopOnEntry": false,
+}

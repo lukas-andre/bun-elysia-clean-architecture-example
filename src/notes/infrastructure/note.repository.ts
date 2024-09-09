@@ -1,16 +1,7 @@
-import sql from '../config/database';
-import { User, Note } from '../types';
+import sql from '../../shared/infrastructure/db';
+import { Note } from '../domain/note.type';
 
-interface UserRecord {
-  id: number;
-  username: string;
-  email: string;
-  password_hash?: string;
-  created_at: Date;
-  updated_at: Date;
-}
-
-interface NoteRecord {
+export interface NoteRecord {
   id: number;
   user_id: number;
   title: string;
@@ -20,39 +11,25 @@ interface NoteRecord {
   tags?: string[];
 }
 
-export const UserModel = {
-  create: async (user: User): Promise<UserRecord> => {
-    const [newUser] = await sql<UserRecord[]>`
-      INSERT INTO users (username, email, password_hash)
-      VALUES (${user.username}, ${user.email}, hash_password(${user.password}))
-      RETURNING id, username, email, created_at, updated_at
-    `;
-    return newUser;
-  },
-  getByUsername: async (username: string): Promise<UserRecord | undefined> => {
-    const [user] = await sql<UserRecord[]>`
-      SELECT id, username, email, password_hash, created_at, updated_at
-      FROM users
-      WHERE username = ${username}
-    `;
-    return user;
-  },
-  deleteByUsername: async (username: string): Promise<User | undefined> => {
-    const [deletedUser] = await sql<User[]>`
-      DELETE FROM users
-      WHERE username = ${username}
-      RETURNING id, username, email, created_at, updated_at
-    `;
-    return deletedUser;
-  },
-};
+export interface CreateNoteParms {
+  user_id: number;
+  title: string;
+  content: string;
+  tags?: string[];
+}
 
-export const NoteModel = {
-  create: async (note: Note): Promise<NoteRecord> => {
+export interface UpdateNoteParms {
+  title?: string;
+  content?: string;
+  tags?: string[];
+}
+
+export class NoteRepository {
+  static async create(note: CreateNoteParms): Promise<NoteRecord> {
     return sql.begin(async (transaction) => {
       const [newNote] = await transaction<NoteRecord[]>`
         INSERT INTO notes (user_id, title, content)
-        VALUES (${note.user_id}, ${note.title!}, ${note.content})
+        VALUES (${note.user_id}, ${note.title}, ${note.content})
         RETURNING *
       `;
 
@@ -71,8 +48,9 @@ export const NoteModel = {
 
       return newNote;
     });
-  },
-  getById: async (id: number): Promise<NoteRecord | undefined> => {
+  }
+
+  static async getById(id: number): Promise<NoteRecord | undefined> {
     const [note] = await sql<NoteRecord[]>`
       SELECT n.*, array_remove(array_agg(t.name), NULL) as tags
       FROM notes n
@@ -82,30 +60,23 @@ export const NoteModel = {
       GROUP BY n.id
     `;
     return note;
-  },
-  search: async (query: string): Promise<NoteRecord[]> => {
-    let result = await sql`
-      SELECT 
-        n.id,
-        n.user_id,
-        n.title,
-        n.content,
-        n.created_at,
-        n.updated_at,
-        array_remove(array_agg(t.name), NULL) as tags
+  }
+
+  static async getAll(): Promise<NoteRecord[]> {
+    return await sql<NoteRecord[]>`
+      SELECT n.*, array_remove(array_agg(t.name), NULL) as tags
       FROM notes n
       LEFT JOIN note_tags nt ON n.id = nt.note_id
       LEFT JOIN tags t ON nt.tag_id = t.id
-      WHERE n.search_vector @@ plainto_tsquery('english', ${query})
-      GROUP BY n.id, n.user_id, n.title, n.content, n.created_at, n.updated_at
-      ORDER BY ts_rank(n.search_vector, plainto_tsquery('english', ${query})) DESC
+      GROUP BY n.id
+      ORDER BY n.created_at DESC
     `;
+  }
 
-     const parsedResult = result.slice(0, result.count) as NoteRecord[];
-     return parsedResult;
-
-  },
-  update: async (id: number, note: Partial<Note>): Promise<NoteRecord | undefined> => {
+  static async update(
+    id: number,
+    note: UpdateNoteParms,
+  ): Promise<NoteRecord | undefined> {
     return sql.begin(async (transaction) => {
       const [updatedNote] = await transaction<NoteRecord[]>`
         UPDATE notes
@@ -140,20 +111,44 @@ export const NoteModel = {
 
       return updatedNote;
     });
-  },
-  delete: async (id: number): Promise<NoteRecord | undefined> => {
+  }
+
+  static async delete(id: number): Promise<NoteRecord | undefined> {
     const [deletedNote] = await sql<NoteRecord[]>`
       DELETE FROM notes
       WHERE id = ${id}
       RETURNING *
     `;
     return deletedNote;
-  },
-  deleteAllByUserId: async (userId: number): Promise<number> => {
+  }
+
+  static async deleteAllByUserId(userId: number): Promise<number> {
     const result = await sql`
       DELETE FROM notes
       WHERE user_id = ${userId}
     `;
     return result.count;
-  },
-};
+  }
+
+  static async searchByTerm(term: string) {
+    let result = await sql`
+      SELECT 
+        n.id,
+        n.user_id,
+        n.title,
+        n.content,
+        n.created_at,
+        n.updated_at,
+        array_remove(array_agg(t.name), NULL) as tags
+      FROM notes n
+      LEFT JOIN note_tags nt ON n.id = nt.note_id
+      LEFT JOIN tags t ON nt.tag_id = t.id
+      WHERE n.search_vector @@ plainto_tsquery('english', ${term})
+      GROUP BY n.id, n.user_id, n.title, n.content, n.created_at, n.updated_at
+      ORDER BY ts_rank(n.search_vector, plainto_tsquery('english', ${term})) DESC
+    `;
+
+    const parsedResult = result.slice(0, result.count) as Note[];
+    return parsedResult;
+  }
+}
