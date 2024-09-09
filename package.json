@@ -6,7 +6,9 @@
     "dev": "bun run --watch src/app.ts",
     "db:up": "docker-compose --env-file .env -f db/docker-compose.yml up -d",
     "db:down": "docker-compose --env-file .env -f db/docker-compose.yml down",
-    "db:migrate": "bun migrate.js"
+    "db:migrate": "bun migrate.js",
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@elysiajs/swagger": "^1.1.1",
@@ -17,8 +19,12 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.6",
     "bun-types": "latest",
-    "@types/jsonwebtoken": "^9.0.6"
+    "eslint": "^9.10.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "prettier": "^3.3.3"
   },
   "module": "src/index.js"
 }

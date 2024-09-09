@@ -1,5 +1,5 @@
-import sql from "../../../shared/infraestructure/db";
-import { Note } from "../../domain/note.type";
+import sql from '../../../shared/infraestructure/db';
+import { Note } from '../../domain/note.type';
 
 export interface NoteRecord {
   id: number;
@@ -73,7 +73,10 @@ export class NoteProvider {
     `;
   }
 
-  static async update(id: number, note: UpdateNoteParms): Promise<NoteRecord | undefined> {
+  static async update(
+    id: number,
+    note: UpdateNoteParms,
+  ): Promise<NoteRecord | undefined> {
     return sql.begin(async (transaction) => {
       const [updatedNote] = await transaction<NoteRecord[]>`
         UPDATE notes

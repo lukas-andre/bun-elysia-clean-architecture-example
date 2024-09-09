@@ -1,5 +1,5 @@
-import sql from "../../../shared/infraestructure/db";
-import { User } from "../../domain/user.type";
+import sql from '../../../shared/infraestructure/db';
+import { User } from '../../domain/user.type';
 
 export interface UserRecord {
   id: number;
@@ -11,9 +11,9 @@ export interface UserRecord {
 }
 
 export interface CreateUserParms {
-  username: string,
-  email: string,
-  password: string
+  username: string;
+  email: string;
+  password: string;
 }
 
 export class UserProvider {
@@ -26,7 +26,9 @@ export class UserProvider {
     return newUser;
   }
 
-  static async getByUsername(username: string): Promise<UserRecord | undefined> {
+  static async getByUsername(
+    username: string,
+  ): Promise<UserRecord | undefined> {
     const [user] = await sql<UserRecord[]>`
       SELECT id, username, email, password_hash, created_at, updated_at
       FROM users

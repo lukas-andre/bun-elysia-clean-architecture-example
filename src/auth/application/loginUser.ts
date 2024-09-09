@@ -1,32 +1,37 @@
-import { Static, t } from "elysia";
-import { generateToken } from "../../shared/infraestructure/auth/jwt";
-import { verifyPassword } from "../../shared/infraestructure/auth/password";
-import { UserProvider } from "../../users/infrastructure/providers/user.provider";
+import { Static, t } from 'elysia';
+import { generateToken } from '../../shared/infraestructure/auth/jwt';
+import { verifyPassword } from '../../shared/infraestructure/auth/password';
+import { UserProvider } from '../../users/infrastructure/providers/user.provider';
 
 export const LoginUserRequestSchema = t.Object({
   username: t.String(),
-  password: t.String()
+  password: t.String(),
 });
 
 export const LoginUserResponseSchema = t.Object({
   user: t.Object({
     id: t.Number(),
     username: t.String(),
-    email: t.String()
+    email: t.String(),
   }),
-  token: t.String()
+  token: t.String(),
 });
 
 export type LoginUserRequest = Static<typeof LoginUserRequestSchema>;
 export type LoginUserResponse = Static<typeof LoginUserResponseSchema>;
 
-export const loginUser = async (loginData: LoginUserRequest): Promise<LoginUserResponse> => {
+export const loginUser = async (
+  loginData: LoginUserRequest,
+): Promise<LoginUserResponse> => {
   const user = await UserProvider.getByUsername(loginData.username);
   if (!user) {
     throw new Error('User not found');
   }
 
-  const isPasswordValid = await verifyPassword(loginData.password, user.password_hash!);
+  const isPasswordValid = await verifyPassword(
+    loginData.password,
+    user.password_hash!,
+  );
 
   if (!isPasswordValid) {
     throw new Error('Invalid password');
@@ -36,13 +41,15 @@ export const loginUser = async (loginData: LoginUserRequest): Promise<LoginUserR
   const token = generateToken({
     id,
     email,
-    username
+    username,
   });
 
   return {
     user: {
-        id, username, email, 
+      id,
+      username,
+      email,
     },
-    token
+    token,
   };
 };

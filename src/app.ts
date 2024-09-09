@@ -1,4 +1,4 @@
-import logger  from 'logixlysia';
+import logger from 'logixlysia';
 import swagger from '@elysiajs/swagger';
 import { env } from './shared/infraestructure/env';
 import { AppRoutes } from './app.routes';
@@ -13,22 +13,25 @@ const server = new Elysia()
       documentation: {
         info: {
           title: '🦊 Elysia Clean Architecture',
-          description: 'Clean Architecture pattern for ElysiaJS + Bun + Postgres.js',
+          description:
+            'Clean Architecture pattern for ElysiaJS + Bun + Postgres.js',
           version: '1.0.0',
           license: {
             name: 'MIT',
-            url: 'https://opensource.org/license/mit/'
+            url: 'https://opensource.org/license/mit/',
           },
           contact: {
             name: 'Lucas André Henry',
-            url: 'https://www.linkedin.com/in/lucas-henryd/'
-          }
-        }
-      }
-    })
+            url: 'https://www.linkedin.com/in/lucas-henryd/',
+          },
+        },
+      },
+    }),
   )
-  .use(AppRoutes)
+  .use(AppRoutes);
 
 server.listen({ port: env.PORT });
 
-console.log(`🦊 Elysia is running at ${server.server?.hostname}:${server.server?.port}`);
+console.log(
+  `🦊 Elysia is running at ${server.server?.hostname}:${server.server?.port}`,
+);

@@ -12,7 +12,7 @@ describe('Note Routes', () => {
     const user = await UserService.registerUser({
       username: 'noteuser',
       email: 'noteuser@example.com',
-      password: 'password123'
+      password: 'password123',
     });
     userId = user.id;
   });
@@ -26,9 +26,9 @@ describe('Note Routes', () => {
           user_id: userId,
           title: 'Test Note',
           content: 'This is a test note',
-          tags: ['test', 'note']
-        })
-      })
+          tags: ['test', 'note'],
+        }),
+      }),
     );
 
     expect(response.status).toBe(200);
@@ -48,14 +48,14 @@ describe('Note Routes', () => {
           user_id: userId,
           title: 'Another Test Note',
           content: 'This is another test note',
-          tags: ['another', 'test']
-        })
-      })
+          tags: ['another', 'test'],
+        }),
+      }),
     );
     const createdNote = await createResponse.json();
 
     const response = await app.handle(
-      new Request(`http://localhost/notes/${createdNote.id}`)
+      new Request(`http://localhost/notes/${createdNote.id}`),
     );
 
     expect(response.status).toBe(200);
@@ -66,7 +66,7 @@ describe('Note Routes', () => {
 
   it('should search notes', async () => {
     const response = await app.handle(
-      new Request('http://localhost/notes/search?q=test')
+      new Request('http://localhost/notes/search?q=test'),
     );
 
     expect(response.status).toBe(200);

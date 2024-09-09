@@ -18,9 +18,9 @@ describe('User Routes', () => {
         body: JSON.stringify({
           username: 'testuser',
           email: 'test@example.com',
-          password: 'password123'
-        })
-      })
+          password: 'password123',
+        }),
+      }),
     );
 
     expect(response.status).toBe(200);
@@ -37,9 +37,9 @@ describe('User Routes', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           username: 'testuser',
-          password: 'password123'
-        })
-      })
+          password: 'password123',
+        }),
+      }),
     );
 
     expect(response.status).toBe(200);

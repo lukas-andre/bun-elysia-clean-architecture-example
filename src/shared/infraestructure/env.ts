@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 const envSchema = z.object({
   // Application
@@ -22,8 +22,8 @@ const envSchema = z.object({
   // Additional Elysia-specific variables
   ELYSIA_VERSION: z.string().default('0.0.0'),
   RUNTIME: z.enum(['bun', 'edge']).default('bun'),
-})
+});
 
-export const env = envSchema.parse(process.env)
+export const env = envSchema.parse(process.env);
 
-export const DATABASE_URL = `postgres://${env.PGUSER}:${env.PGPASSWORD}@${env.PGHOST}:${env.PGPORT}/${env.PGDATABASE}`
+export const DATABASE_URL = `postgres://${env.PGUSER}:${env.PGPASSWORD}@${env.PGHOST}:${env.PGPORT}/${env.PGDATABASE}`;
