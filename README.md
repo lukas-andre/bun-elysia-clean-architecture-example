@@ -1,135 +1,187 @@
-# Notes API
+# 🦊 Bun + Elysia + Postgres.js Clean Architecture Example
 
-## Project Description
+A clean architecture implementation using [Bun](https://bun.sh/), [Elysia](https://elysiajs.com/), and [Postgres.js](https://github.com/porsager/postgres) for building a robust and scalable API.
 
-Notes API is a backend application that provides an interface for managing notes with full-text search capabilities. It uses modern and efficient technologies to offer optimal performance and a pleasant development experience.
+## 🚀 TLDR
 
-### Key Features:
+- **Lightning Fast**: Incredibly quick app startup and blazingly fast test execution.
+- **Debugger Ready**: Configure and run the "Debug Bun" setup in `src/app.ts` or any test file for seamless debugging.
+- **Swagger Integration**: Impressive API documentation with built-in type safety.
+- **Clean Architecture**: While not out-of-the-box, this boilerplate demonstrates how to achieve a scalable clean architecture with Elysia.
+- **Plugin System**: Easily extensible through Elysia's plugin system, as showcased in this repo.
+- **Open Source Boilerplate**: Designed to kickstart your projects with best practices baked in.
 
-- Full CRUD operations for notes
-- Full-text search in notes
-- Tagging system for categorizing notes
-- User authentication
+This project aims to provide a solid foundation for building real-world applications with Bun and Elysia, emphasizing the importance of testing, debugging, and maintainable architecture.
 
-## Technologies Used
+## 🚀 Roadmap
 
-1. **Bun**: Fast all-in-one JavaScript runtime
+- [x] Bun as runtime
+- [x] Elysia as web framework
+- [x] Postgres.js for database operations
+- [x] Clean Architecture pattern
+- [x] ESLint + Prettier configuration
+- [x] Organized import sorting
+- [x] Environment variable management
+- [x] Simple database migration
+- [x] Integration (E2E) tests
+- [x] Swagger documentation
+- [ ] Test database setup
+- [ ] JWT Guard implementation
+- [ ] Caching mechanism
+- [ ] Enhanced logging
+- [ ] OpenTelemetry integration
+- [ ] Improved database migrations
 
-   - Runs JavaScript and TypeScript
-   - Includes package manager, bundler, and test runner
+## 📚 Table of Contents
 
-2. **Elysia**: Minimal and efficient web framework for Bun
+- [Overview](#overview)
+- [Project Structure](#project-structure)
+- [Setup](#setup)
+- [Features](#features)
+- [API Documentation](#api-documentation)
+- [Testing](#testing)
+- [TODO](#todo)
+- [Contributing](#contributing)
+- [License](#license)
 
-   - Static typing
-   - High performance
-   - Declarative API
+## 🌟 Overview
 
-3. **Postgres.js**: Native PostgreSQL client for Node.js and Bun
+This project demonstrates a clean architecture approach to building a web API using modern JavaScript technologies. It leverages [Bun](https://bun.sh/) as the runtime environment, [Elysia](https://elysiajs.com/) as the web framework, and [Postgres.js](https://github.com/porsager/postgres) for database interactions. The application follows clean architecture principles, ensuring a clear separation of concerns and maintainability.
 
-   - Full support for PostgreSQL features
-   - High performance
-   - Simple and powerful API
+Key highlights:
+- Extremely fast startup times and test execution
+- Integrated debugging capabilities
+- Comprehensive Swagger documentation with strong typing
+- Scalable architecture achieved through careful structuring and Elysia's plugin system
 
-4. **PostgreSQL**: Relational database management system
-   - Robust and reliable
-   - Support for full-text search
+While Elysia doesn't provide a scalable structure out of the box, this boilerplate shows how to achieve clean architecture with some additional effort, making it an excellent starting point for serious application development.
 
-## Project Setup
+## 🏗 Project Structure
 
-1. Clone the repository:
+The project follows a clean architecture pattern with the following structure:
 
-   ```
-   git clone https://github.com/your-username/notes-api.git
-   cd notes-api
-   ```
+```
+src/
+├── auth/
+│   ├── application/
+│   ├── domain/
+│   └── infrastructure/
+├── notes/
+│   ├── application/
+│   ├── domain/
+│   └── infrastructure/
+├── shared/
+│   └── infrastructure/
+└── users/
+    ├── domain/
+    └── infrastructure/
+```
 
+- `auth/`: Authentication-related modules
+- `notes/`: Note management modules
+- `users/`: User management modules
+- `shared/`: Shared utilities and configurations
+
+Each module is divided into:
+- `application/`: Use cases and business logic
+- `domain/`: Domain entities and types
+- `infrastructure/`: External interfaces (controllers, repositories)
+
+## 🛠 Setup
+
+1. Clone the repository
 2. Install dependencies:
-
    ```
    bun install
    ```
-
-3. Configure environment variables:
-
-   - Copy `.env.example` to `.env`
-   - Edit `.env` with your configurations
-
-4. Start PostgreSQL database:
-
+3. Set up environment variables (copy `.env.example` to `.env` and fill in the values)
+4. Start the database:
    ```
    bun run db:up
    ```
-
-5. Run migrations:
-
+5. Run database migrations:
    ```
    bun run db:migrate
    ```
-
 6. Start the development server:
    ```
    bun run dev
    ```
 
-The server will be available at `http://localhost:3000`
+## ✨ Features
 
-## Project Structure
+### 🌐 Elysia Web Framework
+The project uses Elysia, a modern and performant web framework for Bun. It provides a clean and intuitive API for building web applications.
+
+### 🗄️ Postgres.js
+Postgres.js is used for database operations, offering a simple and efficient way to interact with PostgreSQL databases.
+
+### 🏛 Clean Architecture
+The project follows clean architecture principles, separating concerns into distinct layers: Application, Domain, and Infrastructure.
+
+### 🧹 ESLint + Prettier
+Code quality and consistency are maintained using ESLint and Prettier with a standardized configuration.
+
+### 📁 Import Sorting
+Imports are automatically organized using the `eslint-plugin-simple-import-sort` plugin.
+
+### 🔐 Environment Management
+Environment variables are managed securely using a combination of `.env` files and the `zod` library for validation.
+
+### 🗃 Database Migration
+A simple database migration system is implemented using raw SQL scripts.
+
+### 📚 Swagger Documentation
+API documentation is automatically generated using Swagger, making it easy for developers to understand and interact with the API.
+
+## 📖 API Documentation
+
+The API documentation is available through Swagger UI. After starting the server, you can access it at `http://localhost:3000/swagger`.
+
+Here's a preview of what the Swagger documentation looks like:
+
+![Swagger Documentation](docs/swagger.png)
+
+To update this screenshot:
+1. Start your server
+2. Navigate to `http://localhost:3000/swagger` in your browser
+3. Take a screenshot of the Swagger UI
+4. Save the screenshot in your project's repository (e.g., in the `docs` folder)
+5. Update the image path in this README to point to your new screenshot
+
+## 🧪 Testing
+
+The project includes integration (E2E) tests to ensure the correct functionality of the API endpoints. Run the tests using:
 
 ```
-/
-├── src/
-│   ├── routes/
-│   │   ├── notes.ts
-│   │   └── users.ts
-│   ├── db/
-│   │   └── index.ts
-│   ├── middleware/
-│   │   └── auth.ts
-│   └── index.ts
-├── migrations/
-│   └── schema.sql
-├── docker-compose.yml
-├── .env
-├── .env.example
-├── package.json
-└── README.md
+bun test
 ```
 
-## Useful Commands
+## 📝 TODO
 
-- Start development server:
+- [ ] Set up a separate test database that can be dynamically created and destroyed for each test run
+- [ ] Implement JWT Guard for protected routes
+- [ ] Add caching mechanism to improve performance
+- [ ] Enhance logging capabilities for better debugging and monitoring
+- [ ] Integrate OpenTelemetry for advanced observability
+- [ ] Improve database migration system for better version control and rollback capabilities
+- [ ] Implement rate limiting for API endpoints
+- [ ] Add input validation middleware
+- [ ] Set up CI/CD pipeline
+- [ ] Implement refresh token mechanism
+- [ ] Add WebSocket support for real-time features
 
-  ```
-  bun run dev
-  ```
+## 🤝 Contributing
 
-- Run tests:
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-  ```
-  bun test
-  ```
+## 📄 License
 
-- Run migrations:
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-  ```
-  bun run db:migrate
-  ```
 
-- Build for production:
-  ```
-  bun run build
-  ```
+[El contenido existente se mantiene...]
 
-## Contributing
 
-Contributions are welcome. Please follow these steps:
 
-1. Fork the repository
-2. Create a new branch for your feature
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
+[El resto del contenido existente se mantiene...]
