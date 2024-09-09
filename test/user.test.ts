@@ -14,7 +14,6 @@ describe('User Routes', () => {
   it('should register a new user', async () => {
     await UserRepository.deleteByUsername('testuser');
     const response = await app.handle(
-      // eslint-disable-next-line no-undef
       new Request('http://localhost/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -34,7 +33,6 @@ describe('User Routes', () => {
 
   it('should login a user', async () => {
     const response = await app.handle(
-      // eslint-disable-next-line no-undef
       new Request('http://localhost/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

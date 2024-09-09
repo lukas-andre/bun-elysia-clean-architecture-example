@@ -28,6 +28,7 @@ export default [
     languageOptions: {
       globals: {
         ...globals.node,
+        ...globals.browser,
       },
       parser: tseslint.parser,
       parserOptions: {

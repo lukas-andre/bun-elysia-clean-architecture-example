@@ -22,7 +22,6 @@ describe('Note Routes', () => {
 
   it('should create a new note', async () => {
     const response = await app.handle(
-      // eslint-disable-next-line no-undef
       new Request('http://localhost/notes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -44,7 +43,6 @@ describe('Note Routes', () => {
 
   it('should get a note by id', async () => {
     const createResponse = await app.handle(
-      // eslint-disable-next-line no-undef
       new Request('http://localhost/notes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -59,7 +57,6 @@ describe('Note Routes', () => {
     const createdNote = await createResponse.json();
     console.log({ createdNote });
     const response = await app.handle(
-      // eslint-disable-next-line no-undef
       new Request(`http://localhost/notes/${createdNote.data.id}`),
     );
 
